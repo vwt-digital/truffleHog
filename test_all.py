@@ -35,7 +35,7 @@ class TestStringMethods(unittest.TestCase):
         # https://github.com/dxa4481/truffleHog/commit/9ed54617547cfca783e0f81f8dc5c927e3d1e345
         since_commit = 'd15627104d07846ac2914a976e8e347a663bbd9b'  # nosec
         commit_w_secret = '9ed54617547cfca783e0f81f8dc5c927e3d1e345'  # nosec
-        cross_valdiating_commit_w_secret_comment = 'OH no a secret'  # nosec
+        cross_validating_commit_w_secret_comment = 'OH no a secret'  # nosec
 
         if sys.version_info >= (3,):
             tmp_stdout = io.StringIO()
@@ -57,7 +57,7 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(1, len(filtered_results))
         self.assertEqual(commit_w_secret, filtered_results[0]['commitHash'])
         # Additionally, we cross-validate the commit comment matches the expected comment
-        self.assertEqual(cross_valdiating_commit_w_secret_comment, filtered_results[0]['commit'].strip())
+        self.assertEqual(cross_validating_commit_w_secret_comment, filtered_results[0]['commit'].strip())
 
     @patch('truffleHog.truffleHog.clone_git_repo')
     @patch('truffleHog.truffleHog.Repo')
