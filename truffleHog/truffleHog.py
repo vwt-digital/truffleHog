@@ -206,15 +206,22 @@ def print_results(print_json, issue):
 
 
 def is_exclude_line(line, entropy_regex_exclusions):
+    if is_no_trufflehog_line(line):
+        return True
     for regex_exclusion in entropy_regex_exclusions:
         if regex_exclusion.search(line):
             return True
     return False
 
 
-def find_entropy(printable_diff, commit_time, branch_name, prev_commit, blob, commit_hash, entropy_regex_exclusions):
+def is_no_trufflehog_line(line):
+    return "no_trufflehog" in line
+
+
+def find_entropy(printable_diff, commit_time, branch_name, prev_commit, blob, entropy_regex_exclusions):
     strings_found = []
     lines = printable_diff.split("\n")
+
     for line in lines:
         if is_exclude_line(line, entropy_regex_exclusions):
             continue
@@ -274,8 +281,7 @@ def diff_worker(diff, prev_commit, branch_name, commit_hash, custom_regexes, do_
         commit_time = datetime.datetime.fromtimestamp(prev_commit.committed_date).strftime('%Y-%m-%d %H:%M:%S')
         found_issues = []
         if do_entropy:
-            entropic_diff = find_entropy(printable_diff, commit_time, branch_name, prev_commit, blob, commit_hash,
-                                         entropy_regex_exclusions)
+            entropic_diff = find_entropy(printable_diff, commit_time, branch_name, prev_commit, blob, entropy_regex_exclusions)
             if entropic_diff:
                 found_issues.append(entropic_diff)
         if do_regex:
