@@ -116,8 +116,8 @@ optional arguments:
                         (default), no Git object paths are excluded unless
                         effectively excluded via the --include_paths option.
   -e ENTROPY_EXCLUDE_RE_FILE, --entropy-exclude-regex ENTROPY_EXCLUDE_RE_FILE
-			File with regular expressions (one perline), none of
-			wihch may match a diff line in order for it to be 
+			File with regular expressions (one per line), none of
+			which may match a diff line in order for it to be 
 			scanned by entropy checks. If empty or not provided
 			(default), all diff lines are included.
 ```
