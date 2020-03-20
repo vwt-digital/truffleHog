@@ -14,8 +14,10 @@ import os
 import re
 import json
 import stat
+
 from git import Repo
 from git import NULL_TREE
+from git import GitCommandError, InvalidGitRepositoryError
 from truffleHogRegexes.regexChecks import regexes
 
 
@@ -164,7 +166,13 @@ class bcolors:
 
 def clone_git_repo(git_url):
     project_path = tempfile.mkdtemp()
-    Repo.clone_from(git_url, project_path)
+    try:
+        Repo.clone_from(git_url, project_path)
+    except GitCommandError as e:
+        if re.search("repository.* *.does not exist", e.stderr):
+            exit(bcolors.FAIL + "Error: Git repository does not exist" + bcolors.ENDC)
+        else:
+            exit(bcolors.FAIL + "Error: Git command error: \n" + bcolors.ENDC + str(e))
     return project_path
 
 
@@ -343,7 +351,10 @@ def find_strings(git_url, since_commit=None, max_depth=1000000, print_json=False
         project_path = repo_path
     else:
         project_path = clone_git_repo(git_url)
-    repo = Repo(project_path)
+    try:
+        repo = Repo(project_path)
+    except InvalidGitRepositoryError:
+        exit(bcolors.BOLD + bcolors.FAIL + "Error: Invalid Git repository" + bcolors.ENDC)
     already_searched = set()
     output_dir = tempfile.mkdtemp()
 
